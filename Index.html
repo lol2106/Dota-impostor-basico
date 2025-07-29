@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Juego del Impostor - Dota 2</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #111; color: white; }
+    .card { border: 2px solid #444; margin: 10px auto; padding: 10px; border-radius: 10px; width: 200px; background: #222; cursor: pointer; }
+    img { width: 125px; border-radius: 10px; margin-top: 10px; }
+    .hidden { visibility: hidden; }
+  </style>
+</head>
+<body>
+  <h1>Juego del Impostor - Héroes de Dota 2</h1>
+  <p>Jugadores: <input type="number" id="numPlayers" value="5" min="3" max="10" /></p>
+  <button onclick="startGame()">Repartir Sobres</button>
+  <div id="cardsContainer"></div>
+  <script>
+    const heroData = [
+  { name: "Axe", img: "axe.jpg" },
+  { name: "Pudge", img: "pudge.jpg" },
+  { name: "Invoker", img: "invoker.jpg" },
+  { name: "Juggernaut", img: "juggernaut.jpg" },
+  { name: "Phantom Assassin", img: "phantom_assassin.jpg" },
+  { name: "Lina", img: "lina.jpg" },
+  { name: "Drow Ranger", img: "drow_ranger.jpg" },
+  { name: "Sniper", img: "sniper.jpg" },
+  { name: "Crystal Maiden", img: "crystal_maiden.jpg" },
+  { name: "Storm Spirit", img: "storm_spirit.jpg" },
+  { name: "Anti-Mage", img: "anti-mage.jpg" },
+  { name: "Ursa", img: "ursa.jpg" },
+  { name: "Mirana", img: "mirana.jpg" },
+  { name: "Legion Commander", img: "legion_commander.jpg" },
+  { name: "Templar Assassin", img: "templar_assassin.jpg" },
+  { name: "Vengeful Spirit", img: "vengeful_spirit.jpg" },
+  { name: "Zeus", img: "zeus.jpg" },
+  { name: "Luna", img: "luna.jpg" },
+  { name: "Witch Doctor", img: "witch_doctor.jpg" },
+  { name: "Shadow Fiend", img: "shadow_fiend.jpg" },
+  { name: "Tidehunter", img: "tidehunter.jpg" },
+  { name: "Lion", img: "lion.jpg" },
+  { name: "Tinker", img: "tinker.jpg" },
+  { name: "Wraith King", img: "wraith_king.jpg" },
+  { name: "Bounty Hunter", img: "bounty_hunter.jpg" },
+  { name: "Sven", img: "sven.jpg" },
+  { name: "Queen of Pain", img: "queen_of_pain.jpg" },
+  { name: "Bristleback", img: "bristleback.jpg" },
+  { name: "Shadow Shaman", img: "shadow_shaman.jpg" },
+  { name: "Nature's Prophet", img: "nature's_prophet.jpg" },
+  { name: "Lich", img: "lich.jpg" },
+  { name: "Riki", img: "riki.jpg" },
+  { name: "Faceless Void", img: "faceless_void.jpg" },
+  { name: "Nyx Assassin", img: "nyx_assassin.jpg" },
+  { name: "Huskar", img: "huskar.jpg" },
+  { name: "Bane", img: "bane.jpg" },
+  { name: "Silencer", img: "silencer.jpg" },
+  { name: "Disruptor", img: "disruptor.jpg" },
+  { name: "Warlock", img: "warlock.jpg" },
+  { name: "Dazzle", img: "dazzle.jpg" },
+  { name: "Clinkz", img: "clinkz.jpg" },
+  { name: "Weaver", img: "weaver.jpg" },
+  { name: "Tusk", img: "tusk.jpg" },
+  { name: "Timbersaw", img: "timbersaw.jpg" },
+  { name: "Techies", img: "techies.jpg" },
+  { name: "Meepo", img: "meepo.jpg" },
+  { name: "Batrider", img: "batrider.jpg" },
+  { name: "Chen", img: "chen.jpg" },
+  { name: "Broodmother", img: "broodmother.jpg" },
+  { name: "Beastmaster", img: "beastmaster.jpg" },
+  { name: "Clockwerk", img: "clockwerk.jpg" },
+  { name: "Dark Seer", img: "dark_seer.jpg" },
+  { name: "Doom", img: "doom.jpg" },
+  { name: "Dragon Knight", img: "dragon_knight.jpg" },
+  { name: "Ember Spirit", img: "ember_spirit.jpg" },
+  { name: "Enchantress", img: "enchantress.jpg" },
+  { name: "Enigma", img: "enigma.jpg" },
+  { name: "Grimstroke", img: "grimstroke.jpg" },
+  { name: "Jakiro", img: "jakiro.jpg" },
+  { name: "Keeper of the Light", img: "keeper_of_the_light.jpg" },
+  { name: "Kunkka", img: "kunkka.jpg" },
+  { name: "Leshrac", img: "leshrac.jpg" },
+  { name: "Lone Druid", img: "lone_druid.jpg" },
+  { name: "Lycan", img: "lycan.jpg" },
+  { name: "Magnus", img: "magnus.jpg" },
+  { name: "Mars", img: "mars.jpg" },
+  { name: "Medusa", img: "medusa.jpg" },
+  { name: "Monkey King", img: "monkey_king.jpg" },
+  { name: "Morphling", img: "morphling.jpg" },
+  { name: "Naga Siren", img: "naga_siren.jpg" },
+  { name: "Necrophos", img: "necrophos.jpg" },
+  { name: "Night Stalker", img: "night_stalker.jpg" },
+  { name: "Ogre Magi", img: "ogre_magi.jpg" },
+  { name: "Omniknight", img: "omniknight.jpg" },
+  { name: "Oracle", img: "oracle.jpg" },
+  { name: "Outworld Destroyer", img: "outworld_destroyer.jpg" },
+  { name: "Pangolier", img: "pangolier.jpg" },
+  { name: "Phoenix", img: "phoenix.jpg" },
+  { name: "Razor", img: "razor.jpg" },
+  { name: "Rubick", img: "rubick.jpg" },
+  { name: "Sand King", img: "sand_king.jpg" },
+  { name: "Slardar", img: "slardar.jpg" },
+  { name: "Slark", img: "slark.jpg" },
+  { name: "Snapfire", img: "snapfire.jpg" },
+  { name: "Spectre", img: "spectre.jpg" },
+  { name: "Spirit Breaker", img: "spirit_breaker.jpg" },
+  { name: "Terrorblade", img: "terrorblade.jpg" },
+  { name: "Tiny", img: "tiny.jpg" },
+  { name: "Treant Protector", img: "treant_protector.jpg" },
+  { name: "Troll Warlord", img: "troll_warlord.jpg" },
+  { name: "Underlord", img: "underlord.jpg" },
+  { name: "Undying", img: "undying.jpg" },
+  { name: "Venomancer", img: "venomancer.jpg" },
+  { name: "Viper", img: "viper.jpg" },
+  { name: "Visage", img: "visage.jpg" },
+  { name: "Void Spirit", img: "void_spirit.jpg" },
+  { name: "Windranger", img: "windranger.jpg" },
+  { name: "Winter Wyvern", img: "winter_wyvern.jpg" },
+  { name: "Arc Warden", img: "arc_warden.jpg" },
+  { name: "Dawnbreaker", img: "dawnbreaker.jpg" },
+  { name: "Dark Willow", img: "dark_willow.jpg" },
+  { name: "Hoodwink", img: "hoodwink.jpg" },
+  { name: "Marci", img: "marci.jpg" },
+  { name: "Muerta", img: "muerta.jpg" },
+  { name: "Primal Beast", img: "primal_beast.jpg" }
+    ];
+
+    let roles = [];
+
+    function startGame() {
+      const num = parseInt(document.getElementById("numPlayers").value);
+      if (isNaN(num) || num < 3) {
+        alert("El mínimo son 3 jugadores.");
+        return;
+      }
+
+      const container = document.getElementById("cardsContainer");
+      container.innerHTML = "";
+
+      const selected = heroData[Math.floor(Math.random() * heroData.length)];
+      roles = Array(num).fill(selected);
+      const impostorIndex = Math.floor(Math.random() * num);
+      roles[impostorIndex] = { name: "IMPOSTOR", img: null };
+
+      roles.forEach((role, i) => {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const img = document.createElement("img");
+  img.src = "img/sobre_cerrado.png";
+  img.dataset.estado = "cerrado";
+
+  const texto = document.createElement("div");
+  texto.innerText = " Sobre " + (i + 1);
+
+  card.appendChild(texto);
+  card.appendChild(img);
+
+  let abierto = false; // Agregado fuera del onclick
+
+card.onclick = function () {
+  if (abierto) return; // si ya se abrió, no hacer nada
+
+  abierto = true; // marcar como abierto permanentemente
+  img.dataset.estado = "abierto";
+
+  if (role.name === "IMPOSTOR") {
+    texto.innerHTML = "<strong>IMPOSTOR</strong>";
+    img.src = "img/sobre_abierto.png";
+  } else {
+    texto.innerHTML = "<strong>" + role.name + "</strong>";
+    img.src = role.img;
+  }
+
+  // Después de 5 segundos vuelve al sobre cerrado, pero ya no se podrá volver a tocar
+  setTimeout(() => {
+    texto.innerText = "📩 Sobre " + (i + 1);
+    img.src = "img/sobre_cerrado.png";
+  }, 5000);
+};
+
+  container.appendChild(card);
+});
+    }
+  </script>
+</body>
+</html>
